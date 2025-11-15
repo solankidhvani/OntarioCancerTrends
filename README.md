@@ -44,8 +44,6 @@ OntarioCancerTrends/
 │
 ├── notebooks/              # Jupyter notebooks for exploratory analysis, visualizations, reporting, and prototyping
 │
-├── scripts/                # (If populated) Python or R scripts for automation, utility functions, or data processing routines
-│
 └── README.md               # This documentation file
 ```
 
@@ -138,5 +136,4 @@ Adjust `how` param as needed (e.g., left, inner, outer). Handle NaNs explicitly.
 - `images/`: Model output visualizations/artifacts.
 - `reports/`: Analysis reports (PDF).
 - `notebooks/`: Jupyter notebooks for analysis and prototyping.
-- `scripts/`: Data processing or helper scripts.
 - `README.md`: This documentation file.
