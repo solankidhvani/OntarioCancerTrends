@@ -13,15 +13,15 @@ Government health officials and policy analysts seeking data-driven insights to 
 
 ## Data Sources
 - **Cancer Incidence Snapshot (2010–2014):**  
-  `Cancer_Incidence_Snapshot_2010_2014.csv`  
+  `data/processed/PHO_Cancer_Incidence_2010_2014.csv`  
   Contains counts and age-standardized rates for all cancer types across PHUs.
 
 - **Cancer Mortality Snapshot (2003–2015):**  
-  `Cancer_Mortality_Snapshot_2003_2015.csv`  
+  `data/processed/PHO_Cancer_Mortality_2003_2015.csv`  
   Contains counts and age-standardized rates for all cancer types across PHUs.
 
 - **SDOH Data:**  
-  Original Excel (`Ontario Social Determinants of Health Data.xlsx`) pivoted to wide format and stored in `SDOH_Clean_Wide.csv`.  
+  Original Excel (`data/raw/SDOH_Snapshot_Data.xlsx`) pivoted to wide format and stored in `data/processed/SDOH_Clean_Wide.csv`.  
   Contains socio-economic indicator percentages for PHUs.
 
 ---
@@ -31,19 +31,37 @@ Government health officials and policy analysts seeking data-driven insights to 
 OntarioCancerTrends/
 │
 ├── data/
-│   ├── Cancer_Incidence_Snapshot_2010_2014.csv
-│   ├── Cancer_Mortality_Snapshot_2003_2015.csv
-│   ├── SDOH_Clean_Wide.csv
+│   ├── raw/
+│   │   ├── Cancer_Incidence_Snapshot_Data_2010_2014.xlsx
+│   │   ├── Cancer_Mortality_Snapshot_Data_2003_2015.xlsx
+│   │   ├── SDOH_Snapshot_Data.xlsx
+│   │   └── index-on-marg.xlsx
+│   │
+│   └── processed/
+│       ├── PHO_Cancer_Incidence_2010_2014.csv
+│       ├── PHO_Cancer_Mortality_2003_2015.csv
+│       └── SDOH_Clean_Wide.csv
+│
+├── models/
+│   └── Cancer_SDOH_Model.ipynb
+│
+├── images/
+│   ├── LightGBM_Incidence.png
+│   ├── LightGBM_Mortality.png
+│   ├── SHAP_XGBoost_Incidence.png
+│   ├── SHAP_XGBoost_Mortality.png
+│   ├── XGBoost_Incidence.png
+│   ├── XGBoost_Mortality.png
+│   └── figures/
+│       └── (saved model files and predictions)
+│
+├── reports/
+│   └── regional_cancer_analysis.pdf
 │
 ├── notebooks/
-│   └── analysis.ipynb
+├── scripts/
 │
-├── src/
-│   ├── data_preprocessing.py
-│   ├── visualization.py
-│
-├── README.md
-└── requirements.txt
+└── README.md
 ```
 
 ---
@@ -65,9 +83,9 @@ OntarioCancerTrends/
 To load the data in Python:
 ```python
 import pandas as pd
-inc = pd.read_csv("data/Cancer_Incidence_Snapshot_2010_2014.csv")
-mort = pd.read_csv("data/Cancer_Mortality_Snapshot_2003_2015.csv")
-sdoh = pd.read_csv("data/SDOH_Clean_Wide.csv")
+inc = pd.read_csv("data/processed/PHO_Cancer_Incidence_2010_2014.csv")
+mort = pd.read_csv("data/processed/PHO_Cancer_Mortality_2003_2015.csv")
+sdoh = pd.read_csv("data/processed/SDOH_Clean_Wide.csv")
 ```
 Create a clean key for merging:
 ```python
@@ -98,7 +116,11 @@ Adjust `how` param as needed (e.g., left, inner, outer). Handle NaNs explicitly.
 ---
 
 ## File Summary
-- `data/Cancer_Incidence_Snapshot_2010_2014.csv`: Cleaned incidence data.
-- `data/Cancer_Mortality_Snapshot_2003_2015.csv`: Cleaned mortality data.
-- `data/SDOH_Clean_Wide.csv`: Pivoted SDOH snapshot.
+- `data/raw/`: Original data files in Excel format.
+- `data/processed/PHO_Cancer_Incidence_2010_2014.csv`: Cleaned incidence data.
+- `data/processed/PHO_Cancer_Mortality_2003_2015.csv`: Cleaned mortality data.
+- `data/processed/SDOH_Clean_Wide.csv`: Pivoted SDOH snapshot.
+- `models/Cancer_SDOH_Model.ipynb`: Main analysis notebook with modeling and visualizations.
+- `images/`: Model output visualizations and saved model artifacts.
+- `reports/regional_cancer_analysis.pdf`: Analysis report.
 - `README.md`: This file.
