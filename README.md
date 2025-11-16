@@ -1,7 +1,7 @@
 # Ontario Cancer Trends Project
 
 ## Overview
-This project investigates trends in cancer incidence and mortality across Ontario's Public Health Units (PHUs), situating these trends within their socio-economic context. The primary objective is to facilitate evidence-based resource allocation by public health authorities.
+This project investigates trends in cancer incidence and mortality across Ontario's Public Health Units (PHUs), situating these trends within their socio-economic context. The primary objective is [...]  
 
 **Business Question:**  
 *How can health departments better allocate their limited funds to best support cancer mortality rates?*
@@ -58,7 +58,7 @@ OntarioCancerTrends/
   Example: PHO_Cancer_Incidence_2010_2014.csv
 
 - **models/**:  
-  Contains main modeling and analysis notebooks—typically, these notebooks house the workflow for feature engineering, model building (e.g., LightGBM/XGBoost), and in-depth exploratory data analysis.
+  Contains main modeling and analysis notebooks—typically, these notebooks house the workflow for feature engineering, model building (e.g., LightGBM/XGBoost), and in-depth exploratory data anal[...]  
 
 - **images/**:  
   Contains static image outputs and visualization assets generated during data analysis and modeling.  
@@ -68,7 +68,7 @@ OntarioCancerTrends/
   Contains summarized project deliverables and findings as formal reports for stakeholders (usually in PDF).
 
 - **notebooks/**:  
-  Jupyter notebooks supporting exploratory data analysis, intermediate experiments, data visualization, and results presentation. Notebooks here may be in-development, contain draft analyses, or serve as prototyping groundwork before consolidation into the main model notebook.
+  Jupyter notebooks supporting exploratory data analysis, intermediate experiments, data visualization, and results presentation. Notebooks here may be in-development, contain draft analyses, or s[...]  
 
 - **scripts/**:  
   (If present and populated) Utility or helper scripts for repeatable data processing, batch running, or transformations outside notebooks.
@@ -124,6 +124,11 @@ Adjust `how` param as needed (e.g., left, inner, outer). Handle NaNs explicitly.
 - SDOH available only for years [2016, 2021], while cancer data cover other years. Choose appropriate alignment or averaging.
 - Marginalization data is excluded. If included, ensure matching/normalization.
 - Huron and Perth units merged post-2020; modify grouping for historical analyses if needed.
+
+---
+
+## Team Member Video Reflections
+- Team Member Video Reflections: https://drive.google.com/drive/folders/1IiVzJKRIQJTjDRWzy-D6aG3CtFVSg4sV?usp=drive_link
 
 ---
 
