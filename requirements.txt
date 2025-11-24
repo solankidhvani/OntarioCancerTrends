@@ -1,0 +1,13 @@
+# Core scientific Python stack
+pandas
+numpy
+matplotlib
+seaborn
+# Machine learning
+scikit-learn
+# Optional ML libraries
+xgboost
+lightgbm
+shap
+# Utility
+warnings
