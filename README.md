@@ -1,97 +1,365 @@
 # Ontario Cancer Trends Project
 
 ## Overview
-This project investigates trends in cancer incidence and mortality across Ontario's Public Health Units (PHUs), situating these trends within their socio-economic context. The primary objective is [...]  
+
+This project investigates patterns in cancer incidence and mortality across Ontario’s Public Health Units (PHUs) and examines how these patterns relate to social determinants of health (SDOH). By integrating multiple public health datasets and applying machine-learning models, the project aims to help Ontario’s health ministries better understand which regions face the greatest burden and which social factors most strongly influence outcomes.
 
 **Business Question:**  
-*How can health departments better allocate their limited funds to best support cancer mortality rates?*
+
+*How can Ontario health departments better allocate limited public health resources to PHUs with the greatest cancer burden, based on SDOH-adjusted risk?*
 
 **Intended Audience:**  
-Government health officials and policy analysts seeking data-driven insights to inform resource allocation and policy decisions.
+
+* Ontario government health officials
+
+
+* Policy makers and funding strategists
+
+
+* Public health analysts and epidemiologists
+
 
 ---
 
-## Data Sources
-- **Cancer Incidence Snapshot (2010–2014):**  
-  `data/processed/PHO_Cancer_Incidence_2010_2014.csv`  
-  Contains counts and age-standardized rates for all cancer types across PHUs.
+## Project Structure 
 
-- **Cancer Mortality Snapshot (2003–2015):**  
-  `data/processed/PHO_Cancer_Mortality_2003_2015.csv`  
-  Contains counts and age-standardized rates for all cancer types across PHUs.
-
-- **SDOH Data:**  
-  Original Excel (`data/raw/SDOH_Snapshot_Data.xlsx`) pivoted to wide format and stored in `data/processed/SDOH_Clean_Wide.csv`.  
-  Contains socio-economic indicator percentages for PHUs.
-
----
-
-## File/Folder Structure & Directory Descriptions
 
 ```
 OntarioCancerTrends/
 │
 ├── data/
-│   ├── raw/                # Original raw Excel data files as received from PHO and Statistics Canada
-│   └── processed/          # Cleaned and pre-processed data files (CSV) ready for analysis/modeling
+│   ├── raw/                           # Original Excel files (or downloaded using src/download_data.py)
+│   │   ├── Cancer_Incidence_Snapshot_Data_2010_2014.xlsx
+│   │   ├── Cancer_Mortality_Snapshot_Data_2003_2015.xlsx
+│   │   ├── SDOH_Snapshot_Data.xlsx
+│   │   └── index-on-marg.xlsx
+│   │
+│   └── processed/                     # Cleaned datasets used for modelling
+│       ├── PHO_Cancer_Incidence_2010_2014.csv
+│       ├── PHO_Cancer_Mortality_2003_2015.csv
+│       └── SDOH_Clean_Wide.csv
 │
-├── models/                 # Jupyter notebooks for analytic and statistical modeling (e.g., regression, ML)
+├── src/                               # Scripts for reproducibility for repo hygiene
+│   ├── download_data.py               # Downloads raw PHO data if too large to store
+│   ├── clean_sdoh.py                  # Pivots & cleans SDOH data
+│   └── merge_datasets.py              # Harmonizes PHUs and merges datasets for analysis
 │
-├── images/                 # Figures and image files output by the models or notebooks (plots, SHAP values, etc.)
-│   └── figures/            # Additional subfolder for storing model-generated outputs and prediction files
+├── models/
+│   └── Cancer_SDOH_Model.ipynb        # Main modelling notebook
 │
-├── reports/                # Final analysis reports, typically in PDF format
+├── images/                            # Model outputs, SHAP values, figures
+│   ├── LightGBM_Incidence.png
+│   ├── LightGBM_Mortality.png
+│   ├── SHAP_XGBoost_Incidence.png
+│   ├── SHAP_XGBoost_Mortality.png
+│   ├── XGBoost_Incidence.png
+│   ├── XGBoost_Mortality.png
+│   └── figures/
+│       └── (saved model files and predictions)
 │
-├── notebooks/              # Jupyter notebooks for exploratory analysis, visualizations, reporting, and prototyping
+├── reports/
+│   └── regional_cancer_analysis.pdf
 │
-└── README.md               # This documentation file
+├── notebooks/                         # EDA and experimentation notebooks
+│
+├── requirements.txt                   # Environment for reproducibility
+│
+└── README.md
+
 ```
+---
+## Data Sources
 
-### Directory Details
+1. Cancer Incidence Snapshot (2010–2014):
 
-- **data/raw/**:  
-  Contains all unaltered, original input files including cancer incidence/mortality snapshots and SDOH indicator Excel sheets.  
-  Example: Cancer_Incidence_Snapshot_Data_2010_2014.xlsx
+   `data/processed/PHO_Cancer_Incidence_2010_2014.csv`
+    
+  * Age-standardized incidence rates
+     
+  * Cancer counts by PHU
 
-- **data/processed/**:  
-  Contains cleaned CSV-formatted datasets derived from the raw Excel files. All harmonization, pivoting, renaming, and NA processing is reflected here.  
-  Example: PHO_Cancer_Incidence_2010_2014.csv
+   
 
-- **models/**:  
-  Contains main modeling and analysis notebooks—typically, these notebooks house the workflow for feature engineering, model building (e.g., LightGBM/XGBoost), and in-depth exploratory data anal[...]  
 
-- **images/**:  
-  Contains static image outputs and visualization assets generated during data analysis and modeling.  
-  Includes subfolder **images/figures/** for more granular model outputs (e.g., prediction results).
+2. Cancer Mortality Snapshot (2003–2015):
+   
+    `data/processed/PHO_Cancer_Mortality_2003_2015.csv`  
+  
+  * Age-standardized mortality rates
+  
+  * Mortality counts by PHU
 
-- **reports/**:  
-  Contains summarized project deliverables and findings as formal reports for stakeholders (usually in PDF).
 
-- **notebooks/**:  
-  Jupyter notebooks supporting exploratory data analysis, intermediate experiments, data visualization, and results presentation. Notebooks here may be in-development, contain draft analyses, or s[...]  
+3. Social Determinants of Health Snapshot:
 
-- **scripts/**:  
-  (If present and populated) Utility or helper scripts for repeatable data processing, batch running, or transformations outside notebooks.
+   `data/raw/SDOH_Snapshot_Data.xlsx`) pivoted to wide format and stored in `data/processed/SDOH_Clean_Wide.csv`.  
 
-- **README.md**:  
-  You're reading it! This document provides project context, usage, and supporting details.
+ * 21 sociodemographic indicators (income, education, housing, labour force stats, etc.)
+
+
+* PHUs available: 54
+
+
+* Years: 2016, 2021.
+
 
 ---
 
 ## Data Cleaning and Harmonization
-- **PHU Names:**  
-  The old units “Huron County Health Unit” and “Perth District Health Unit” are merged into “Huron Perth Public Health” for 2020+; all names are harmonized.
 
-- **SDOH Pivot and Cleaning:**  
-  SDOH sheet is pivoted so each PHU-year is a row, indicators are columns. Numeric conversion, blank-as-NaN, etc.
+**PHU Standardization:**
 
-  - Indicators: 21 socio-demographic/economic variables
-  - PHUs covered: 54
-  - Years: [2016, 2021]
+* Two legacy PHUs (Huron County + Perth District) merged into Huron Perth Public Health.
+
+* All datasets aligned using a unified ```Geography_clean``` key.
+
+**SDOH Cleaning:**
+
+* Original Excel was pivoted from long → wide
+
+
+* All indicators converted to numeric
+
+
+* Missing values imputed using median strategy
+
+
+* Output stored as ```SDOH_Clean_Wide.csv```.
 
 ---
+## Exploratory Data Analysis (EDA)
 
-## Usage Instructions
+**Key EDA steps included:**
+
+* Distribution analysis of age-standardized incidence & mortality
+
+
+* Correlation heatmaps between outcomes and all 21 SDOH indicators
+
+
+* Trend analysis for high- and low-performing PHUs
+
+
+* Clustering of PHUs by demographic similarity
+
+**Notable EDA Findings:**
+
+* PHUs with higher low-income rates and higher unemployment consistently showed elevated cancer mortality.
+
+
+* Incidence was strongly correlated with age-based population indicators (e.g. % seniors).
+
+
+* Northern Ontario PHUs exhibited systematically higher mortality than urban counterparts.
+
+
+![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/Mortality_SDOH2016%20Correlation.png)
+
+![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/Cancer_Incidence_SDOH2016_Correlation.png)
+
+
+---
+## Modelling & Methodology
+
+**Feature Engineering**
+
+* Standardized all numeric SDOH variables
+
+
+* Created a “Geography_clean” key for merging
+
+* Nearest-year alignment:
+
+    * 2014 incidence ↔ 2016 SDOH
+
+    * 2015 mortality ↔ 2016 SDOH
+
+* Merged datasets by PHU & year
+
+
+
+**Models Trained**
+
+* Linear Regression
+
+
+* Lasso Regression
+
+
+* XGBoost Regressor
+
+
+* LightGBM Regressor
+
+
+**Evaluation Metrics**
+
+* R²
+
+
+* MAE
+
+
+* RMSE
+
+---
+## Model Performance 
+
+| Model             |   R² (Incidence) |    MAE |   RMSE | R² (Mortality) | MAE | RMSE |
+| :---------------- | ----------------: | -----: | ------: | -------------: | ---: | ----: |
+| Linear Regression | 0.6928 |  8.8404 | 10.4007 | 0.7566 | 3.3465 | 4.6263 |
+| Lasso             | 0.7483 |  7.6032 |  9.4141 | 0.8025 | 2.9225 | 4.1668 |
+| XGBoost           | 0.7038 |  8.5660 | 10.2130 | **0.9032 (Best)** | **2.0914** | **2.9179** |
+| LightGBM          | 0.3737 | 12.6761 | 14.8501 | 0.3170 | 6.0687 | 7.7492 |
+
+
+Best Model (Mortality): XGBoost
+
+Best Model (Incidence): Lasso
+
+---
+## Model Insights (SHAP + Feature Importance)
+
+**Top Predictors of Mortality (XGBoost)**
+
+Strongest demographic drivers:
+
+* Visible minority rate (dominant predictor)
+
+* Recent immigrant rate
+
+* Immigrant rate
+
+* Language barriers (no English/French)
+
+Moderate:
+
+* % seniors
+
+* Housing burden, LIM/LICO (smaller but present)
+
+Interpretation:
+Cancer mortality is most strongly associated with demographic vulnerability, suggesting systemic barriers in access to screening and treatment.
+
+**Top Predictors of Incidence (XGBoost)**
+
+* Rate of seniors (major biological driver)
+
+* Visible minority %
+
+* Immigrant %
+
+* Language barriers
+
+* Employment, education, and income factors follow with modest influence.
+
+Interpretation:
+Incidence patterns reflect both aging demographics and population diversity.
+
+
+**LightGBM: Poverty-Focused Patterns**
+
+Unlike XGBoost, LightGBM emphasizes:
+
+* Lone-parent household rate (#1 predictor)
+
+* Unemployment rate
+
+* Housing cost burden (>30% income)
+
+* Low-income measures (LIM/LICO)
+
+Interpretation:
+LightGBM reveals that economic hardship is highly predictive of both incidence and mortality.
+
+---
+## Figure-by-Figure Explanations
+Figure — XGBoost Feature Importance (Mortality)
+
+Shows top 25 predictors; dominated by immigration and visible-minority indicators.
+Interpretation: Mortality disparities heavily reflect demographic and structural access barriers.
+
+Figure — XGBoost Feature Importance (Incidence)
+
+Seniors dominate incidence prediction, followed by diversity/immigration variables.
+Interpretation: Aging + demographic composition drive incidence levels.
+
+Figure — SHAP Summary Plot (Mortality)
+
+High immigrant/visible-minority values push mortality upward.
+Interpretation: Clear evidence of healthcare access inequities.
+
+![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/SHAP_XGBoost_Mortality.png)
+
+Figure — SHAP Summary Plot (Incidence)
+
+Seniors, immigration, visible minority share strongly influence incidence.
+Interpretation: Both structural & demographic factors shape incidence.
+
+![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/SHAP_XGBoost_Incidence.png)
+
+Figure — LightGBM Feature Importance (Mortality)
+
+Economic hardship variables dominate.
+Interpretation: Poverty and deprivation strongly shape mortality outcomes.
+
+Figure — LightGBM Feature Importance (Incidence)
+
+Same pattern: socio-economic stressors > demographic composition.
+Interpretation: Communities facing deprivation experience higher risk.
+
+---
+## Insights & Policy Recommendations
+
+**Key Insights**
+
+* Social vulnerability explains a large share of PHU-level mortality variation.
+
+* XGBoost accurately identifies high-risk PHUs driven by demographic vulnerability.
+
+* LightGBM uncovers parallel patterns where poverty & deprivation strongly shape outcomes.
+
+* Northern/rural PHUs consistently show elevated burden across models.
+
+**Policy Recommendations**
+
+1. Target funding to PHUs with both high cancer burden and high SDOH vulnerability.
+
+2. Expand equity-oriented screening (language supports, cultural navigation).
+
+3. Address structural barriers:
+
+    * Housing insecurity
+
+    * Income supports
+
+    * Employment programs
+
+4. Use the modelling framework for annual risk-adjusted projections to guide budgeting.
+
+---
+## Reproducibility & Environment Setup
+
+**Install Environment**
+
+```bash
+git clone <your-repo-url>
+cd OntarioCancerTrends
+python -m venv venv
+source venv/bin/activate     # For macOS/Linux OS
+venv\Scripts\activate        # For Windows OS
+pip install -r requirements.txt
+```
+**Run Notebook**
+
+```bash
+jupyter notebook models/Cancer_SDOH_Model.ipynb
+
+```
+---
+
+## Sample Usage
+
 To load the data in Python:
 ```python
 import pandas as pd
@@ -127,18 +395,33 @@ Adjust `how` param as needed (e.g., left, inner, outer). Handle NaNs explicitly.
 
 ---
 
-## Team Member Video Reflections
-- Team Member Video Reflections: https://drive.google.com/drive/folders/1IiVzJKRIQJTjDRWzy-D6aG3CtFVSg4sV?usp=drive_link
+## Reflection Videos
+
+Links for each member below:
+
+- Glenn Blake : https://drive.google.com/drive/folders/1IiVzJKRIQJTjDRWzy-D6aG3CtFVSg4sV?usp=drive_link
+
+- Alexandre Tugirumubano : https://drive.google.com/drive/folders/1IiVzJKRIQJTjDRWzy-D6aG3CtFVSg4sV?usp=drive_link
+
+- Dhvani Solanki : https://drive.google.com/drive/folders/1IiVzJKRIQJTjDRWzy-D6aG3CtFVSg4sV?usp=drive_link
+
 
 ---
+## Project Conclusion
 
+
+This project provides a comprehensive, SDOH-adjusted understanding of cancer outcomes across Ontario PHUs. The findings underscore the role of demographics, socio-economic conditions, and structural vulnerabilities in shaping regional cancer burden. The modelling framework offers actionable insight for health-equity planning, policy development, and targeted resource allocation across the province.
+
+---
 ## File Summary
 - `data/raw/`: Original data files in Excel format.
 - `data/processed/PHO_Cancer_Incidence_2010_2014.csv`: Cleaned incidence data.
 - `data/processed/PHO_Cancer_Mortality_2003_2015.csv`: Cleaned mortality data.
 - `data/processed/SDOH_Clean_Wide.csv`: Pivoted SDOH snapshot.
+- `src/`: Scripts for reproducibility and repo hygiene.
 - `models/`: Analysis notebooks for modeling.
 - `images/`: Model output visualizations/artifacts.
 - `reports/`: Analysis reports (PDF).
 - `notebooks/`: Jupyter notebooks for analysis and prototyping.
+- `requirements.txt/`: Environment for reproducibility.
 - `README.md`: This documentation file.
