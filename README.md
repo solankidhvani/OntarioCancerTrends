@@ -46,6 +46,7 @@ OntarioCancerTrends/
 │
 ├── models/
 │   └── Cancer_SDOH_Model.ipynb        # Main modelling notebook
+│   └── Cancer_SDOH_Model.py           # Main modelling notebook in py with comments
 │
 ├── images/                            # Model outputs, SHAP values, figures
 │   ├── LightGBM_Incidence.png
@@ -59,6 +60,13 @@ OntarioCancerTrends/
 │
 ├── reports/
 │   └── regional_cancer_analysis.pdf
+│   └── figures/                     # Static Figures for Offline Review
+│       ├── LightGBM_Incidence.png
+│       ├── LightGBM_Mortality.png
+│       ├── SHAP_XGBoost_Incidence.png
+│       ├── SHAP_XGBoost_Mortality.png
+│       └── XGBoost_Incidence.png
+│       └── XGBoost_Mortality.png
 │
 ├── notebooks/                         # EDA and experimentation notebooks
 │
