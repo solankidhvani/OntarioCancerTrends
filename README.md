@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project investigates patterns in cancer incidence and mortality across Ontario’s Public Health Units (PHUs) and examines how these patterns relate to social determinants of health (SDOH). By integrating multiple public health datasets and applying machine-learning models, the project aims to help Ontario’s health ministries better understand which regions face the greatest burden and which social factors most strongly influence outcomes.
+This project investigates patterns in cancer incidence and mortality across Ontario’s Public Health Units (PHUs) and examines how these patterns relate to social determinants of health (SDOH). By integrating multiple public health datasets and applying machine learning models, the project aims to help Ontario’s health ministries better understand which regions face the greatest burden and which social factors most strongly influence outcomes.
 
 **Business Question:**  
 
@@ -74,7 +74,7 @@ OntarioCancerTrends/
 
    `data/processed/PHO_Cancer_Incidence_2010_2014.csv`
     
-  * Age-standardized incidence rates
+  * Age standardized incidence rates
      
   * Cancer counts by PHU
 
@@ -85,14 +85,14 @@ OntarioCancerTrends/
    
     `data/processed/PHO_Cancer_Mortality_2003_2015.csv`  
   
-  * Age-standardized mortality rates
+  * Age standardized mortality rates
   
   * Mortality counts by PHU
 
 
 3. Social Determinants of Health Snapshot:
 
-   `data/raw/SDOH_Snapshot_Data.xlsx`) pivoted to wide format and stored in `data/processed/SDOH_Clean_Wide.csv`.  
+   `data/raw/SDOH_Snapshot_Data.xlsx` pivoted to wide format and stored in `data/processed/SDOH_Clean_Wide.csv`.  
 
  * 21 sociodemographic indicators (income, education, housing, labour force stats, etc.)
 
@@ -131,23 +131,23 @@ OntarioCancerTrends/
 
 **Key EDA steps included:**
 
-* Distribution analysis of age-standardized incidence & mortality
+* Distribution analysis of age standardized incidence & mortality
 
 
 * Correlation heatmaps between outcomes and all 21 SDOH indicators
 
 
-* Trend analysis for high- and low-performing PHUs
+* Trend analysis for high and low performing PHUs
 
 
 * Clustering of PHUs by demographic similarity
 
 **Notable EDA Findings:**
 
-* PHUs with higher low-income rates and higher unemployment consistently showed elevated cancer mortality.
+* PHUs with higher low income rates and higher unemployment consistently showed elevated cancer mortality.
 
 
-* Incidence was strongly correlated with age-based population indicators (e.g. % seniors).
+* Incidence was strongly correlated with age based population indicators (e.g. % seniors).
 
 
 * Northern Ontario PHUs exhibited systematically higher mortality than urban counterparts.
@@ -156,6 +156,23 @@ OntarioCancerTrends/
 ![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/Mortality_SDOH2016%20Correlation.png)
 
 ![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/Cancer_Incidence_SDOH2016_Correlation.png)
+
+
+---
+## Summary of Key Findings
+
+
+The exploratory analysis revealed consistent and meaningful patterns that directly inform the modelling stage:
+
+* Higher cancer mortality is strongly linked to economic vulnerability (low income, unemployment, lone parent households) and to demographic access barriers (recent immigrants, visible minority rate, language barriers).
+  
+* Cancer incidence patterns are primarily shaped by age structure, PHUs with higher proportions of seniors have systematically higher incidence.
+  
+* Northern Ontario PHUs exhibit elevated mortality levels, even after adjusting for SDOH indicators, suggesting structural barriers in access to screening and treatment.
+  
+* Demographically diverse PHUs (especially large urban centres) show higher predicted risk when language or immigration related barriers are present.
+
+These findings motivate the modelling approach and support the development of equitable, SDOH-adjusted resource allocation strategies for Ontario.
 
 
 ---
@@ -257,55 +274,62 @@ Interpretation:
 Incidence patterns reflect both aging demographics and population diversity.
 
 
-**LightGBM: Poverty-Focused Patterns**
+**LightGBM: Poverty Focused Patterns**
 
 Unlike XGBoost, LightGBM emphasizes:
 
-* Lone-parent household rate (#1 predictor)
+* Lone parent household rate (#1 predictor)
 
 * Unemployment rate
 
 * Housing cost burden (>30% income)
 
-* Low-income measures (LIM/LICO)
+* Low income measures (LIM/LICO)
 
 Interpretation:
 LightGBM reveals that economic hardship is highly predictive of both incidence and mortality.
 
 ---
-## Figure-by-Figure Explanations
-Figure — XGBoost Feature Importance (Mortality)
+## Figure by Figure Explanations
 
-Shows top 25 predictors; dominated by immigration and visible-minority indicators.
+**XGBoost Feature Importance (Mortality)**
+
+Shows top 25 predictors; dominated by immigration and visible minority indicators.
+
 Interpretation: Mortality disparities heavily reflect demographic and structural access barriers.
 
-Figure — XGBoost Feature Importance (Incidence)
+**XGBoost Feature Importance (Incidence)**
 
 Seniors dominate incidence prediction, followed by diversity/immigration variables.
+
 Interpretation: Aging + demographic composition drive incidence levels.
 
-Figure — SHAP Summary Plot (Mortality)
+**SHAP Summary Plot (Mortality)**
 
-High immigrant/visible-minority values push mortality upward.
+High immigrant/visible minority values push mortality upward.
+
 Interpretation: Clear evidence of healthcare access inequities.
 
 ![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/SHAP_XGBoost_Mortality.png)
 
-Figure — SHAP Summary Plot (Incidence)
+**SHAP Summary Plot (Incidence)**
 
 Seniors, immigration, visible minority share strongly influence incidence.
+
 Interpretation: Both structural & demographic factors shape incidence.
 
 ![alt text](https://github.com/solankidhvani/OntarioCancerTrends/blob/main/images/SHAP_XGBoost_Incidence.png)
 
-Figure — LightGBM Feature Importance (Mortality)
+**LightGBM Feature Importance (Mortality)**
 
 Economic hardship variables dominate.
+
 Interpretation: Poverty and deprivation strongly shape mortality outcomes.
 
-Figure — LightGBM Feature Importance (Incidence)
+**LightGBM Feature Importance (Incidence)**
 
-Same pattern: socio-economic stressors > demographic composition.
+Same pattern: socioeconomic stressors > demographic composition.
+
 Interpretation: Communities facing deprivation experience higher risk.
 
 ---
@@ -313,9 +337,9 @@ Interpretation: Communities facing deprivation experience higher risk.
 
 **Key Insights**
 
-* Social vulnerability explains a large share of PHU-level mortality variation.
+* Social vulnerability explains a large share of PHU level mortality variation.
 
-* XGBoost accurately identifies high-risk PHUs driven by demographic vulnerability.
+* XGBoost accurately identifies high risk PHUs driven by demographic vulnerability.
 
 * LightGBM uncovers parallel patterns where poverty & deprivation strongly shape outcomes.
 
@@ -323,19 +347,68 @@ Interpretation: Communities facing deprivation experience higher risk.
 
 **Policy Recommendations**
 
-1. Target funding to PHUs with both high cancer burden and high SDOH vulnerability.
+The modelling results highlight clear, actionable patterns that Ontario health officials can use to guide resource allocation:
 
-2. Expand equity-oriented screening (language supports, cultural navigation).
+**Prioritize High Risk PHUs**
 
-3. Address structural barriers:
+Regions consistently predicted to have higher mortality risk include:
 
-    * Housing insecurity
+* Northern PHUs: Thunder Bay District, Sudbury & District, Porcupine
 
-    * Income supports
 
-    * Employment programs
+* Urban High Diversity PHUs: Toronto, Peel, York
 
-4. Use the modelling framework for annual risk-adjusted projections to guide budgeting.
+
+* Rural Vulnerable PHUs: Chatham-Kent, Windsor-Essex
+
+These PHUs should be considered priority sites for additional screening capacity, resource deployment, and equity focused programs.
+
+**Expand Equity Oriented Screening and Navigation Services**
+
+Based on XGBoost results showing demographic predictors dominating mortality:
+
+* Provide multilingual screening materials and community health navigators.
+  
+* Increase funding for immigrant and visible minority support programs.
+  
+* Improve culturally appropriate cancer awareness outreach in diverse PHUs.
+
+**Target Socioeconomic Barriers Identified by LightGBM**
+
+Since LightGBM elevated poverty indicators:
+
+* Invest in mobile screening clinics in low income and rural PHUs.
+
+
+* Support income assistance programs tied to cancer screening reminders.
+
+
+* Extend after hours screening for working families and lone parent households.
+
+
+**Deploy Structural Support in Northern Ontario**
+
+* Fund teleoncology and remote consult systems.
+
+
+* Increase permanent oncology staffing.
+
+
+* Improve transportation subsidies for rural cancer patients.
+
+
+**Integrate SDOH into Annual Resource Planning**
+
+Use the provided modelling framework to generate annual SDOH-adjusted risk predictions, helping policymakers:
+
+* Forecast emerging high risk PHUs
+
+
+* Update funding envelopes
+
+
+* Prioritize interventions with the largest equity impact.
+
 
 ---
 ## Reproducibility & Environment Setup
@@ -382,7 +455,7 @@ Adjust `how` param as needed (e.g., left, inner, outer). Handle NaNs explicitly.
 
 ## Analysis Ideas
 - Correlate incidence/mortality with SDOH indicators.
-- Regression or time-series modeling with SDOH variables as covariates.
+- Regression or time series modeling with SDOH variables as covariates.
 - Cluster PHUs based on context and outcomes.
 - Trend plots across PHUs or groups.
 
@@ -391,7 +464,7 @@ Adjust `how` param as needed (e.g., left, inner, outer). Handle NaNs explicitly.
 ## Caveats
 - SDOH available only for years [2016, 2021], while cancer data cover other years. Choose appropriate alignment or averaging.
 - Marginalization data is excluded. If included, ensure matching/normalization.
-- Huron and Perth units merged post-2020; modify grouping for historical analyses if needed.
+- Huron and Perth units merged post 2020; modify grouping for historical analyses if needed.
 
 ---
 
@@ -410,7 +483,15 @@ Links for each member below:
 ## Project Conclusion
 
 
-This project provides a comprehensive, SDOH-adjusted understanding of cancer outcomes across Ontario PHUs. The findings underscore the role of demographics, socio-economic conditions, and structural vulnerabilities in shaping regional cancer burden. The modelling framework offers actionable insight for health-equity planning, policy development, and targeted resource allocation across the province.
+This project provides a comprehensive, SDOH-adjusted understanding of cancer incidence and mortality across Ontario’s Public Health Units. By integrating demographic, socioeconomic, and structural indicators with machine learning models, we identify the PHUs most likely to experience elevated cancer burden.
+
+These results directly address the business question:
+
+*How can Ontario health departments better allocate limited public health resources to PHUs with the greatest cancer burden, based on SDOH-adjusted risk?*
+
+Our findings highlight clear disparities, particularly in Northern regions and high diversity urban centres driven by demographic vulnerability, socioeconomic hardship, and systemic access barriers. These insights equip Ontario health officials, policy makers, and public health analysts with actionable, evidence based guidance for distributing resources, designing targeted screening interventions, and strengthening health equity across the province.
+
+By combining rigorous data processing, explainable ML techniques, and policy focused interpretation, this project offers a scalable framework for annual resource planning and equity oriented decision making across Ontario’s Public Health System. This work enhances transparency, prioritization, and fairness in provincial cancer prevention efforts.
 
 ---
 ## File Summary
